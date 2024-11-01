@@ -9,15 +9,19 @@ import com.example.demo.domain.Memo;
 @Mapper
 public interface MemoMapper {
 
-	Memo findById (Long id);
+	Memo findById (Long id, String userName);
 	
-	List<Memo> findAll();
+	Memo findByTitle (String title, String userName);
 	
-	void insert (Memo memo);
+	Long memoCount(String userName);
 	
-	void update (Memo memo);
+	List<Memo> findAll(String userName);
 	
-	void delete (Long id);
+	void insert (Memo memo, String userName);
 	
-	void rmvAl () ;
+	void update (Memo memo, String userName);
+	
+	void delete (Long id, String userName);
+	
+	void rmvAl (String userName) ;
 }

@@ -36,5 +36,10 @@ class UserMapperTest {
 		var user = userMapper.findByUsername("taro");
 		assertThat(user, is(expected));
 	}
-
+	
+//	@Test
+//	void testFindById () {
+//		
+//	}
+	
 }

@@ -12,4 +12,8 @@ public class Memo {
 	private String content;
 	private LocalDateTime created;
 	private LocalDateTime updated;
+	private String userName;
+	
+	
+	
 }

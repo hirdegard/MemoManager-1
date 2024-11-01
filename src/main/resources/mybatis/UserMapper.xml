@@ -11,29 +11,6 @@
 		SELECT * FROM users WHERE username=#{username}
 	</select>
 	
-	<!--ここからMemoMapper-->
 	
-	<select id="findById" parameterType="Long" resultType="com.example.demo.domain.Memo">
-		SELECT * FROM memos WHERE id = #{id}
-	</select>
 	
-	<select id="findAll" resultType="com.example.demo.User">
-		SELECT * FROM memos 
-	</select>
-	
-	<insert id="insert" parameterType="com.example.demo.domain.Memo">
-		INSERT INTO memos (title, content, created, updated) VALUES (#{title}, #{content}, #{created}, #{updated})
-	</insert>
-	
-	<update id="update" parameterType="com.example.demo.domain.Memo">
-		UPDATE memos SET title = #{title}, content = #{content}, updated = #{updated} WHERE id = #{id}
-	</update>
-	
-	<delete id="delete" parameterType="com.example.demo.domain.Memo">
-		DELETE FROM memos WHERE id = #{id}
-	</delete>
-	
-	<delete id="rmvAl">
-		DELETE FROM memos
-	</delete>
 </mapper>
