@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1 th:text="'ようこそ、' + ${username} + 'さん'"></h1>
+	<h2>あなたのメモ一覧</h2>
+	
+	<table border="1">
+		<tr>
+			<th>ID</th>
+			<th>タイトル</th>
+			<th>内容</th>
+			<th>作成日</th>
+			<th>更新日</th>
+		</tr>
+		
+		<tr th:each="memo : ${memos}">
+			<td th:text="${memo.id}"></td>
+			<td th:text="${memo.title}"></td>
+			<td th:text="${memo.content}"></td>
+			<td th:text="${#temporals.format(memo.created, 'yyyy-MM-dd HH:mm')}"></td>
+			<td th:text="${#temporals.format(memo.updated, 'yyyy-MM-dd HH:mm')}"></td>
+		</tr>
+	</table>
+	
+	<p><a href="@{/logout}"></a></p>
+</body>
+</html>

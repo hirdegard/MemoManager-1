@@ -25,18 +25,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/register").permitAll()  // 登録ページは全員がアクセス可能
-                .anyRequest().authenticated())             // それ以外のページは認証が必要
-            
-            .formLogin(login -> login
-                .loginPage("/login") // GETリクエストで表示するカスタムログインページ
-                .defaultSuccessUrl("/home", true)
-                .permitAll())                              // ログインページは全員がアクセス可能
-            .logout(logout -> logout
-                .permitAll());                             // ログアウトも全員がアクセス可能
-
+                                 
+    	http
+        .authorizeHttpRequests(authz -> authz
+            .requestMatchers("/login", "/register").permitAll() // ログインと登録ページは全員アクセス可能
+            .requestMatchers("/user/**").authenticated() // `/user/`で始まるパスは認証が必要
+            .anyRequest().authenticated())
+        .formLogin(form -> form
+            .loginPage("/login")
+            .defaultSuccessUrl("/user/home", true) // ログイン成功後にユーザー専用ページへリダイレクト
+            .permitAll())
+        .logout(logout -> logout
+            .permitAll());
+    	
         return http.build();
     }
 

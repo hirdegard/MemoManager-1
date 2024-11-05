@@ -3,20 +3,22 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.mapper.MemoMapper">
 
+
+
+
+
+
+
 	<select id="findById" parameterType="Long" resultType="com.example.demo.domain.Memo">
 		SELECT * FROM memos WHERE id = #{id}, user_name = #{user_name}
 	</select>
 	
-	<select id="findByTitle" parameterType="String" resultType="com.example.demo.domain.Memo">
-		SELECT * FROM memos WHERE title = #{title}
-	</select>
 	
-	<select  id="memoCount" resultType="Long">
-		SELECT COUNT(*) FROM memos
-	</select>
 	
-	<select id="findAll" resultType="com.example.demo.domain.Memo">
-		SELECT * FROM memos 
+	
+	
+	<select id="findAll" parameterType="String" resultType="com.example.demo.domain.Memo">
+		SELECT * FROM memos WHERE user_name = #{user_name}
 	</select>
 	
 	<insert id="insert" parameterType="com.example.demo.domain.Memo">
