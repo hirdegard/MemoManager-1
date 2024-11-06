@@ -9,20 +9,16 @@
 
 
 
-	<select id="findById" parameterType="Long" resultType="com.example.demo.domain.Memo">
-		SELECT * FROM memos WHERE id = #{id}, user_name = #{user_name}
+	<select id="findById" resultType="com.example.demo.domain.Memo">
+		SELECT * FROM memos WHERE id = #{id} AND user_name = #{user_name}
 	</select>
-	
-	
-	
-	
 	
 	<select id="findAll" parameterType="String" resultType="com.example.demo.domain.Memo">
 		SELECT * FROM memos WHERE user_name = #{user_name}
 	</select>
 	
 	<insert id="insert" parameterType="com.example.demo.domain.Memo">
-		INSERT INTO memos (title, content, created, updated) VALUES (#{title}, #{content}, #{created}, #{updated})
+		INSERT INTO memos (title, content, created, updated, user_name) VALUES (#{title}, #{content}, #{created}, #{updated}, #{userName})
 	</insert>
 	
 	<update id="update" parameterType="com.example.demo.domain.Memo">

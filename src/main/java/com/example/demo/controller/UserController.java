@@ -24,6 +24,7 @@ public class UserController {
 	
 	@Autowired
 	private MemoMapper memoMapper;
+	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
@@ -69,5 +70,11 @@ public class UserController {
     	model.addAttribute("username", username);
     	
     	return "userHome";
+    }
+    
+    @GetMapping("/user/memos/new")
+    public String showCreateMemoForm(Model model) {
+    	model.addAttribute("memo", new Memo());
+    	return "createMemo";
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.demo.domain.User;
+import com.example.demo.mapper.MemoMapper;
 import com.example.demo.mapper.UserMapper;
 
 
@@ -27,6 +28,9 @@ class UserControllerTest {
 	
 	@MockBean
 	private UserMapper userMapper;
+	
+	@MockBean
+	private MemoMapper memoMapper;
 	
 	@MockBean
 	private PasswordEncoder passwordEncoder;
@@ -62,6 +66,15 @@ class UserControllerTest {
 		//パスワードエンコードとユーザー保存の確認
 		verify(passwordEncoder).encode("114514");
 		verify(userMapper).save(user);
+	}
+	
+	@Test
+	@WithMockUser
+	void testShowCreateMemoForm () throws Exception {
+		mock.perform(get("/user/memos/new"))
+		.andExpect(status().isOk())
+		.andExpect(view().name("createMemo"))
+		;
 	}
 
 }
