@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.demo.domain.Memo;
@@ -76,5 +78,59 @@ public class UserController {
     public String showCreateMemoForm(Model model) {
     	model.addAttribute("memo", new Memo());
     	return "createMemo";
+    }
+    
+    @PostMapping("/user/memos")
+    public String createMemo (@ModelAttribute Memo memo, Principal principal) {
+    	memo.setUserName(principal.getName());
+    	memo.setCreated(LocalDateTime.now());
+    	memo.setUpdated(LocalDateTime.now());
+    	memoMapper.insert(memo);
+    	return "redirect:/user/home";
+    }
+    
+    @PostMapping("/user/memos/{id}/delete")
+    public String deleteMemo(@PathVariable Long id, Principal principal) {
+    	String username = principal.getName();
+    	var memo = memoMapper.findById(id, username);
+    	if (memo != null) {
+    		memoMapper.delete(id);
+    	}
+    	return "redirect:/user/home";
+    }
+    
+    @GetMapping("/user/memos/{id}/confirm_delete")
+    public String showDeleteConfirm(@PathVariable Long id, Model model, Principal principal) {
+    	String username = principal.getName();
+    	var memo = memoMapper.findById(id, username);
+    	if (memo == null) {
+    		return "redirect:/user/home";
+    	}
+    	model.addAttribute("memo", memo);
+    	return "confirmDelete";
+    }
+    
+    @GetMapping("/user/memos/{id}/edit")
+    public String showEditMemoForm(@PathVariable Long id, Model model, Principal principal) {
+    	String username = principal.getName();
+    	var memo = memoMapper.findById(id, username);
+    	if (memo == null) {
+    		return "redirect:/user/home";
+    	}
+    	model.addAttribute("memo", memo);
+    	return "editMemo";
+    }
+    
+    @PostMapping("/user/memos/{id}/update")
+    public String updateMemo(@PathVariable Long id, @ModelAttribute Memo memo, Principal principal) {
+    	String username = principal.getName();
+    	var existingMemo = memoMapper.findById(id, username);
+    	if (existingMemo != null) {
+    		memo.setId(id);
+    		memo.setUserName(username);
+    		memo.setUpdated(LocalDateTime.now());
+    		memoMapper.update(id, memo.getTitle(), memo.getContent(), memo.getUpdated());
+    	}
+    	return "redirect:/user/home";
     }
 }

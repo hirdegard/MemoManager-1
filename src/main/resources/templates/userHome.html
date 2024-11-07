@@ -6,6 +6,9 @@
 </head>
 <body>
 	<h1 th:text="'ようこそ、' + ${username} + 'さん'"></h1>
+	
+	<p><a th:href="@{/user/memos/new}">新規メモ作成</a></p>
+	
 	<h2>あなたのメモ一覧</h2>
 	
 	<table border="1">
@@ -23,6 +26,9 @@
 			<td th:text="${memo.content}"></td>
 			<td th:text="${#temporals.format(memo.created, 'yyyy-MM-dd HH:mm')}"></td>
 			<td th:text="${#temporals.format(memo.updated, 'yyyy-MM-dd HH:mm')}"></td>
+			<td>
+				<a th:href="@{|/user/memos/${memo.id}/confirm_delete|}">削除</a>
+			</td>
 		</tr>
 	</table>
 	

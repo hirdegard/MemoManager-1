@@ -6,7 +6,7 @@
 </head>
 <body>
 	<h1>新規メモ作成</h1>
-	<form action="@{/user/memos}" method="post">
+	<form th:action="@{/user/memos}" method="post">
 		<label for="title">タイトル:</label>
 		<input type="text" id="title" name="title" th:value="${memo.title}" required/>
 		

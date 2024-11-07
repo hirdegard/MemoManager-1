@@ -18,7 +18,7 @@
 	</select>
 	
 	<insert id="insert" parameterType="com.example.demo.domain.Memo">
-		INSERT INTO memos (title, content, created, updated, user_name) VALUES (#{title}, #{content}, #{created}, #{updated}, #{userName})
+		INSERT INTO memos (title, content, created, user_name) VALUES (#{title}, #{content}, #{created}, #{userName})
 	</insert>
 	
 	<update id="update" parameterType="com.example.demo.domain.Memo">
@@ -26,7 +26,7 @@
 	</update>
 	
 	<delete id="delete" parameterType="Long">
-		DELETE FROM memos WHERE id = #{id}
+		DELETE FROM memos WHERE id = #{id} 
 	</delete>
 	
 	<delete id="rmvAl">

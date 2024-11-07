@@ -1,5 +1,6 @@
 package com.example.demo.mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -21,10 +22,11 @@ public interface MemoMapper {
 	Memo findById (@Param("id")Long id, @Param("user_name")String userName);
 	
 	void insert (Memo memo);
-//	
-//	void update (Memo memo, String userName);
-//	
-//	void delete (Long id, String userName);
+	
+	void update (@Param("id") Long id, @Param("title") String title,
+			@Param("content") String content, @Param("updated") LocalDateTime updated);
+	
+	void delete (Long id);
 //	
 //	void rmvAl (String userName) ;
 }

@@ -1,12 +1,17 @@
 package com.example.demo.controller;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.security.Principal;
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.example.demo.domain.Memo;
 import com.example.demo.domain.User;
 import com.example.demo.mapper.MemoMapper;
 import com.example.demo.mapper.UserMapper;
@@ -76,5 +82,207 @@ class UserControllerTest {
 		.andExpect(view().name("createMemo"))
 		;
 	}
-
+	
+	@Test
+	@WithMockUser(username="testUser")
+	void testCreateMemo () throws Exception {
+		
+		Principal principal = () -> "testUser";
+		var memo = new Memo();
+		memo.setTitle("Test Title");
+		memo.setContent("Test Content");
+		memo.setUserName(principal.getName());
+		memo.setCreated(LocalDateTime.now());
+		
+		
+		mock.perform(post("/user/memos")
+				.flashAttr("memo", memo)
+				.principal(principal)
+				.with(csrf()))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(redirectedUrl("/user/home"));
+		
+		verify(memoMapper).insert(memo);
+		
+	}
+	
+	@Test
+	@WithMockUser(username="testUser")
+	void testDeleteMemoNormal () throws Exception {
+		//idでレコードを検索して見つかる場合
+		Long id = 1L;
+		Principal principal = () -> "testUser";
+		var memo = new Memo();
+		when(memoMapper.findById(id, principal.getName())).thenReturn(memo);
+		
+		mock.perform(post("/user/memos/{id}/delete", 1)
+				.principal(principal)
+				.with(csrf()))
+				
+		.andExpect(status().is3xxRedirection())
+		.andExpect(redirectedUrl("/user/home"));
+		verify(memoMapper, times(1)).findById(id, principal.getName());
+		verify(memoMapper, times(1)).delete(id);
+	}
+	
+	@Test
+	@WithMockUser(username="testUser")
+	void testDeleteMemoAbnormal () throws Exception {
+		//idでレコードを検索して見つからない場合
+		Long id = 1L;
+		Principal principal = () -> "testUser";
+		
+		when(memoMapper.findById(id, principal.getName())).thenReturn(null);
+		
+		mock.perform(post("/user/memos/{id}/delete", 1)
+				.principal(principal)
+				.with(csrf()))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(redirectedUrl("/user/home"));
+		
+		verify(memoMapper, times(1)).findById(id, principal.getName());
+		verify(memoMapper, times(0)).delete(id);
+		
+	}
+	
+	/*@GetMapping("/user/memos/{id}/confirm_delete")
+    public String showDeleteConfirm(@PathVariable Long id, Model model, Principal principal) {
+    	String username = principal.getName();
+    	var memo = memoMapper.findById(id, username);
+    	if (memo == null) {
+    		return "redirect:/user/home";
+    	}
+    	model.addAttribute("memo", memo);
+    	return "confirmDelete";
+    }*/
+	@Test
+	@WithMockUser(username="testUser")
+	void testShowDeleteConfirmNormal() throws Exception {
+		//メモが見つかる
+		Long id = 1L;
+		Principal principal = () -> "testUser";
+		var memo = new Memo();
+		when(memoMapper.findById(id, principal.getName())).thenReturn(memo);
+		
+		mock.perform(get("/user/memos/{id}/confirm_delete", 1)
+				.principal(principal))
+		.andExpect(view().name("confirmDelete"))
+		.andExpect(model().attribute("memo", memo));
+		
+		verify(memoMapper, times(1)).findById(id, principal.getName());
+	}
+	
+	@Test
+	@WithMockUser(username="testUser")
+	void testShowDeleteConfirmAbnormal() throws Exception {
+		//メモが見つかる
+		Long id = 1L;
+		Principal principal = () -> "testUser";
+		
+		when(memoMapper.findById(id, principal.getName())).thenReturn(null);
+		
+		mock.perform(get("/user/memos/{id}/confirm_delete", 1)
+				.principal(principal))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(redirectedUrl("/user/home"));
+		
+		verify(memoMapper, times(1)).findById(id, principal.getName());
+	}
+	
+	/*@GetMapping("/user/memos/{id}/edit")
+    public String showEditMemoForm(@PathVariable Long id, Model model, Principal principal) {
+    	String username = principal.getName();
+    	var memo = memoMapper.findById(id, username);
+    	if (memo == null) {
+    		return "redirect:/user/home";
+    	}
+    	model.addAttribute("memo", memo);
+    	return "editMemo";
+    }*/
+	
+	@Test
+	@WithMockUser(username="testUser")
+	void testShowEditMemoFormNormal () throws Exception {
+		Principal principal = () -> "testUser";
+		Long id = 3L;
+		var memo = new Memo();
+		when(memoMapper.findById(id, principal.getName())).thenReturn(memo);
+		
+		mock.perform(get("/user/memos/{id}/edit", 3)
+				.principal(principal))
+		.andExpect(status().isOk())
+		.andExpect(model().attribute("memo", memo))
+		.andExpect(view().name("editMemo"));
+		
+		verify(memoMapper, times(1)).findById(id, principal.getName());
+	}
+	
+	@Test
+	@WithMockUser(username="testUser")
+	void testShowEditMemoFormAbnormal () throws Exception {
+		Principal principal = () -> "testUser";
+		Long id = 3L;
+		when(memoMapper.findById(id, principal.getName())).thenReturn(null);
+		
+		mock.perform(get("/user/memos/{id}/edit", 3).principal(principal))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(redirectedUrl("/user/home"));
+		
+		verify(memoMapper, times(1)).findById(id, principal.getName());
+	}
+	
+	/*@PostMapping("/user/memos/{id}/update")
+    public String updateMemo(@PathVariable Long id, @ModelAttribute Memo memo, Principal principal) {
+    	String username = principal.getName();
+    	var existingMemo = memoMapper.findById(id, username);
+    	if (existingMemo != null) {
+    		memo.setId(id);
+    		memo.setUserName(username);
+    		memo.setUpdated(LocalDateTime.now());
+    		memoMapper.update(id, memo.getTitle(), memo.getContent(), memo.getUpdated());
+    	}
+    	return "redirect:/user/home";
+    }*/
+	
+	@Test
+	@WithMockUser(username="testUser")
+	void testUpdateMemoNormal () throws Exception {
+		Principal principal = () -> "testUser";
+		Long id = 3L;
+		var memo = new Memo();
+		memo.setId(id);
+		memo.setUserName(principal.getName());
+		memo.setTitle("old Title");
+		memo.setContent("old Content");
+		memo.setUpdated(LocalDateTime.now().minusDays(1));
+		when(memoMapper.findById(id, principal.getName())).thenReturn(memo);
+		
+		
+		
+		mock.perform(post("/user/memos/{id}/update", 3).principal(principal)
+				.param("title", "New Title")
+				.param("content", "New Content")
+				.with(csrf()))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(redirectedUrl("/user/home"));
+		
+		 ArgumentCaptor<LocalDateTime> updatedTimeCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
+	        verify(memoMapper, times(1)).update(eq(id), eq("New Title"), eq("New Content"), updatedTimeCaptor.capture());
+	}
+	
+	@Test
+	@WithMockUser(username="testUser")
+	void testUpdateMemoAbnormal () throws Exception {
+		Principal principal = () -> "testUser";
+		Long id = 3L;
+		when(memoMapper.findById(id, principal.getName())).thenReturn(null);
+		
+		mock.perform(post("/user/memos/{id}/update", 3).principal(principal)
+				.param("title", "New Title")
+				.param("content", "New Content")
+				.with(csrf()))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(redirectedUrl("/user/home"));
+	}
+	
 }

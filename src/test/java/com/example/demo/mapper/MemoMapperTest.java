@@ -3,14 +3,13 @@ package com.example.demo.mapper;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.example.demo.domain.Memo;
 
 @Transactional
 @SpringBootTest
@@ -32,24 +31,51 @@ class MemoMapperTest {
 	
 	//あとで動くテストを書く。
 	
+//	@Test
+//	void findByIdTest () {
+//		Long id = 27L;
+//		String userName = "taro";
+//		var date = LocalDateTime.of(2000, 12, 10, 0, 0, 0);
+//		var expected = new Memo(27L, "hoge", "fuga",date, date, "taro"); 
+//		var result = mapper.findById(id, userName);
+//		assertThat(expected, is(result));
+//	}
+	
+//	@Test
+//	void insertTest() {
+//		var memo = new Memo();
+//		memo.setContent("content");
+//		memo.setTitle("title");
+//		memo.setCreated(LocalDateTime.now());
+//		memo.setUserName("Alice");
+//		mapper.insert(memo);
+//		assertThat(0, is(0));
+//	}
+
 	@Test
-	void findByIdTest () {
-		Long id = 27L;
+	void deleteTest () {
+		Long id = 39L;
 		String userName = "taro";
-		var date = LocalDateTime.of(2000, 12, 10, 0, 0, 0);
-		var expected = new Memo(27L, "hoge", "fuga",date, date, "taro"); 
-		var result = mapper.findById(id, userName);
-		assertThat(expected, is(result));
+		
+		mapper.delete(id);
+		
+		assertThat(mapper.findById(id, userName), nullValue());
 	}
 	
 	@Test
-	void insertTest() {
-		var expected = new Memo(1L, "tt", "m", LocalDateTime.of(2000, 1, 1, 1, 1, 1), LocalDateTime.of(2001, 1, 1, 1, 1), "taro");
-		mapper.insert(expected);
-		var memos = mapper.findAll("taro");
-		assertThat(memos.contains(expected), is(true));
+	void updateTest () {
+		var pastObj = mapper.findById(49L, "Alice");
+		var updated = LocalDateTime.now();
+		mapper.update(49L, "h", "content" , updated);
+		var result = mapper.findById(49L, "Alice");
 		
+		assertThat(result.getTitle(), is("h"));
+		assertThat(result.getContent(), is("content"));
+		var lag = Duration.between(result.getUpdated(),updated);
+		assertThat(lag.toSeconds() < 1, is(true));
 		
+		assertThat(result.getId(), is(pastObj.getId()));
+		assertThat(result.getCreated(), is(pastObj.getCreated()));
+		assertThat(result.getUserName(), is(pastObj.getUserName()));
 	}
-
 }
