@@ -3,6 +3,7 @@ package com.example.demo.domain;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -14,7 +15,11 @@ public class Memo {
 		
 	}
 	private Long id;
+	
+	@NotBlank
 	private String title;
+	
+	
 	private String content;
 	private LocalDateTime created;
 	private LocalDateTime updated;

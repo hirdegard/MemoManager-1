@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,8 @@ import com.example.demo.domain.Memo;
 import com.example.demo.domain.User;
 import com.example.demo.mapper.MemoMapper;
 import com.example.demo.mapper.UserMapper;
+
+import jakarta.validation.Valid;
 
 @Controller
 public class UserController {
@@ -38,7 +42,12 @@ public class UserController {
 	
 	@PostMapping("/register")
 	
-	public String registerUser(@ModelAttribute User user) {
+	public String registerUser(@ModelAttribute @Valid User user, Errors errors) {
+		if (errors.hasErrors()) {
+			//エラー内容
+			List<ObjectError> objList = errors.getAllErrors();
+			objList.forEach(obj -> System.out.println(obj.toString()));
+		}
 		//パスワードのエンコード
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		userMapper.save(user);
@@ -52,10 +61,10 @@ public class UserController {
         return "login"; // login.htmlテンプレートを表示
     }
     
-    @GetMapping("/home")
-    public String showHomePage () {
-    	return "home"; //
-    }
+//    @GetMapping("/home")
+//    public String showHomePage () {
+//    	return "home"; //
+//    }
     
     //ユーザのページ
     @GetMapping("/user/home")
@@ -81,7 +90,13 @@ public class UserController {
     }
     
     @PostMapping("/user/memos")
-    public String createMemo (@ModelAttribute Memo memo, Principal principal) {
+    public String createMemo (@ModelAttribute @Valid Memo memo, Principal principal, Errors errors) {
+    	if (errors.hasErrors()) {
+			//エラー内容
+			List<ObjectError> objList = errors.getAllErrors();
+			objList.forEach(obj -> System.out.println(obj.toString()));
+		}
+    	
     	memo.setUserName(principal.getName());
     	memo.setCreated(LocalDateTime.now());
     	memo.setUpdated(LocalDateTime.now());

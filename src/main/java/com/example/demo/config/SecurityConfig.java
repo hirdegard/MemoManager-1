@@ -36,6 +36,8 @@ public class SecurityConfig {
             .defaultSuccessUrl("/user/home", true) // ログイン成功後にユーザー専用ページへリダイレクト
             .permitAll())
         .logout(logout -> logout
+        		.logoutUrl("/logout") // ログアウト用URL
+                .logoutSuccessUrl("/login?logout") // ログアウト後のリダイレクト先
             .permitAll());
     	
         return http.build();

@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>メモの削除確認</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メモの削除確認</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-	<h1>メモの削除確認</h1>
-	<p>以下のメモを削除します。よろしいですか？</p>
-	<p>タイトル:
-		<span th:text="${memo.title}"></span>
-	</p>
-	<p>内容:
-		<span th:text="${memo.content}"></span>
-	</p>
-	
-	<!-- 削除を実行するボタン -->
-	<form th:action="@{|/user/memos/${memo.id}/delete|}" method="post">
-		<button type="submit">削除する</button>
-	</form>
-	
-	<!-- キャンセル -->
-	<a th:href="@{/user/home}">キャンセル</a>
+    <div class="container">
+        <h1 class="text-center mb-4">メモの削除確認</h1>
+        <p>以下のメモを削除します。よろしいですか？</p>
+        
+        <p><strong>タイトル:</strong> <span th:text="${memo.title}"></span></p>
+        <p><strong>内容:</strong> <span th:text="${memo.content}"></span></p>
+        
+        <!-- 削除を実行するボタン -->
+        <form th:action="@{|/user/memos/${memo.id}/delete|}" method="post">
+            <button type="submit" class="btn btn-secondary">削除する</button>
+        </form>
+        
+        <!-- キャンセル -->
+        <p class="mt-3"><a th:href="@{/user/home}" class="btn btn-primary">キャンセル</a></p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
