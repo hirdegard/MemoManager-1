@@ -14,7 +14,7 @@ import com.example.demo.mapper.UserMapper;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+	
 	private final UserMapper userMapper;
 	
 	public SecurityConfig(UserMapper userMapper) {

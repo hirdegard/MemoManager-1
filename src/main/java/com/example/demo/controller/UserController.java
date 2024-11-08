@@ -149,4 +149,18 @@ public class UserController {
     	}
     	return "redirect:/user/home";
     }
+    
+    //ユーザーの削除
+    @PostMapping("/user/delete")
+    public String deleteUserAccouont(Principal principal) {
+    	String username = principal.getName();
+    	userMapper.deleteUserByUsername(username);
+    	return "redirect:/login?logout";
+    }
+    
+    //削除画面への遷移
+    @GetMapping("/user/delete/confirm")
+    public String showDeleteConfirmPage() {
+    	return "deleteConfirm";
+    }
 }

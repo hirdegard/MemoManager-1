@@ -37,9 +37,23 @@ class UserMapperTest {
 		assertThat(user, is(expected));
 	}
 	
-//	@Test
-//	void testFindById () {
-//		
-//	}
+	//ユーザー削除のテスト
+	@Test
+	void testDeleteUserByUsername() {
+		var user = new User();
+		user.setUsername("alpha");
+		user.setPassword("114514");
+		userMapper.save(user);
+		var recorded = userMapper.findByUsername("alpha");
+		assertThat(recorded.getUsername(), is(user.getUsername()));
+		assertThat(recorded.getPassword(), is(user.getPassword()));
+		
+		userMapper.deleteUserByUsername("alpha");
+		assertThat(userMapper.findByUsername("alpha"), nullValue());
+	}
+
 	
 }
+/*
+void deleteUserByUsername(String username);
+*/

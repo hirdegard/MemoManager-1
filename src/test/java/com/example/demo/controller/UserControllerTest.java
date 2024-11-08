@@ -253,4 +253,17 @@ class UserControllerTest {
 		.andExpect(redirectedUrl("/user/home"));
 	}
 	
+	//ユーザーの登録解除のテスト
+	@Test
+	@WithMockUser(username="testUser")
+	void testDeleteUserAccouont () throws Exception {
+		Principal principal = () -> "testUser";
+		String username = principal.getName();
+		
+		mock.perform(post("/user/delete").with(csrf()))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(redirectedUrl("/login?logout"));
+		
+		verify(userMapper, times(1)).deleteUserByUsername(username);
+	}
 }
