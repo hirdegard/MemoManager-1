@@ -126,10 +126,11 @@ public class UserController {
     	String username = principal.getName();
     	var existingMemo = memoMapper.findById(id, username);
     	if (existingMemo != null) {
-    		memo.setId(id);
-    		memo.setUserName(username);
-    		memo.setUpdated(LocalDateTime.now());
-    		memoMapper.update(id, memo.getTitle(), memo.getContent(), memo.getUpdated());
+    		existingMemo.setTitle(memo.getTitle());
+    		existingMemo.setContent(memo.getContent());
+    		existingMemo.setUpdated(LocalDateTime.now());
+    		
+    		memoMapper.update(existingMemo.getId(), existingMemo.getTitle(), existingMemo.getContent(), existingMemo.getUpdated());
     	}
     	return "redirect:/user/home";
     }

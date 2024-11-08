@@ -145,16 +145,6 @@ class UserControllerTest {
 		
 	}
 	
-	/*@GetMapping("/user/memos/{id}/confirm_delete")
-    public String showDeleteConfirm(@PathVariable Long id, Model model, Principal principal) {
-    	String username = principal.getName();
-    	var memo = memoMapper.findById(id, username);
-    	if (memo == null) {
-    		return "redirect:/user/home";
-    	}
-    	model.addAttribute("memo", memo);
-    	return "confirmDelete";
-    }*/
 	@Test
 	@WithMockUser(username="testUser")
 	void testShowDeleteConfirmNormal() throws Exception {
@@ -189,16 +179,6 @@ class UserControllerTest {
 		verify(memoMapper, times(1)).findById(id, principal.getName());
 	}
 	
-	/*@GetMapping("/user/memos/{id}/edit")
-    public String showEditMemoForm(@PathVariable Long id, Model model, Principal principal) {
-    	String username = principal.getName();
-    	var memo = memoMapper.findById(id, username);
-    	if (memo == null) {
-    		return "redirect:/user/home";
-    	}
-    	model.addAttribute("memo", memo);
-    	return "editMemo";
-    }*/
 	
 	@Test
 	@WithMockUser(username="testUser")
@@ -231,18 +211,6 @@ class UserControllerTest {
 		verify(memoMapper, times(1)).findById(id, principal.getName());
 	}
 	
-	/*@PostMapping("/user/memos/{id}/update")
-    public String updateMemo(@PathVariable Long id, @ModelAttribute Memo memo, Principal principal) {
-    	String username = principal.getName();
-    	var existingMemo = memoMapper.findById(id, username);
-    	if (existingMemo != null) {
-    		memo.setId(id);
-    		memo.setUserName(username);
-    		memo.setUpdated(LocalDateTime.now());
-    		memoMapper.update(id, memo.getTitle(), memo.getContent(), memo.getUpdated());
-    	}
-    	return "redirect:/user/home";
-    }*/
 	
 	@Test
 	@WithMockUser(username="testUser")

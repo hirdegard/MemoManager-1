@@ -27,11 +27,12 @@
 			<td th:text="${#temporals.format(memo.created, 'yyyy-MM-dd HH:mm')}"></td>
 			<td th:text="${#temporals.format(memo.updated, 'yyyy-MM-dd HH:mm')}"></td>
 			<td>
+                <a th:href="@{|/user/memos/${memo.id}/edit|}">更新</a>
 				<a th:href="@{|/user/memos/${memo.id}/confirm_delete|}">削除</a>
 			</td>
 		</tr>
 	</table>
 	
-	<p><a href="@{/logout}"></a></p>
+	<p><a href="@{/logout}">ログアウト</a></p>
 </body>
 </html>
