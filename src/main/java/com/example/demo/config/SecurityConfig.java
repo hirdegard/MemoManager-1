@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 import com.example.demo.mapper.UserMapper;
 @Configuration
@@ -28,12 +30,14 @@ public class SecurityConfig {
                                  
     	http
         .authorizeHttpRequests(authz -> authz
+        		.requestMatchers("/admin/**").hasRole("ADMIN") // 管理者のみアクセス許可
             .requestMatchers("/login", "/register").permitAll() // ログインと登録ページは全員アクセス可能
             .requestMatchers("/user/**").authenticated() // `/user/`で始まるパスは認証が必要
             .anyRequest().authenticated())
         .formLogin(form -> form
             .loginPage("/login")
             .defaultSuccessUrl("/user/home", true) // ログイン成功後にユーザー専用ページへリダイレクト
+            .failureHandler(authenticationFailureHandler())  // 認証失敗ハンドラ
             .permitAll())
         .logout(logout -> logout
         		.logoutUrl("/logout") // ログアウト用URL
@@ -60,6 +64,12 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+    
+ // 認証失敗時のリダイレクト先を指定するハンドラ
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new SimpleUrlAuthenticationFailureHandler("/login?error=true");
     }
 	
 	
