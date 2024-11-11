@@ -15,5 +15,8 @@
 		DELETE FROM users WHERE username = #{username}
 	</delete>
 	
+	<select id="findAll" parameterType = "com.example.demo.domain.User">
+		SELECT username FROM users WHERE username != 'admin'
+	</select>
 	
 </mapper>

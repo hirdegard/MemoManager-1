@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>ユーザー管理ページ</title>
+</head>
+<body>
+
+	<h1>ユーザー管理ページ</h1>
+	<table border="1">
+		<tr>
+			<th>ユーザー名</th>
+			<th>操作</th>
+		</tr>
+		<tr th:each="user : ${users}">
+			<td th:text="${user.username}"></td>
+			<td>
+				<form th:action="@{|/admin/users/${user.username}/confirm_delete}">
+					<button type="submit">削除</button>
+				</form>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>
